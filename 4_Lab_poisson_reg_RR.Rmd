@@ -1,0 +1,145 @@
+---
+title: 'Lab 2: Poisson Regression and Relative Risk'
+author: "YOUR NAME HERE"
+date: "`r format(Sys.time(), '%d %B, %Y')`"
+output: html_document
+---
+
+## Objectives
+
+In this lab, we will be working on:
+
+1. improving our familiarity with dplyr to manipulate data sets;
+2. improving our familiarity with ggplot2 to visualize infectious disease data;
+3. understanding and applying Poisson regression to infectious disease data in the US;
+4. understanding and interpreting Poisson regression parameter estimates in the context of relative risk;
+5. connecting our model results with the Poisson distribution.
+
+## Getting Started 
+
+Before beginning work on the lab, please clear your environment by clicking on the broom icon in the upper right window of your RStudio session. Also click Session > Restart R to start a new R session.
+
+#### 1. We will be working with some data, called `us_contagious_diseases` available through the *dslabs* package. This is not a package we have used before, so you will have to install it. Make sure you only install this once (so comment out the code line you used to install the package after it is installed.) You can write this line of code right after the line that says INSTALL dslabs package in the code chunk below.
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+## INSTALL dslabs package
+
+
+
+## Load packages
+library(dplyr)
+library(ggplot2)
+library(dslabs)
+
+## Load data from dslabs package
+data("us_contagious_diseases") 
+```
+
+#### 2. Now that we have loaded the data, we should find out what is stored in the `us_contagious_diseases` object. Use the `str` function to find out what kind of an object we have and how the information is stored in it.
+
+```{r}
+
+```
+
+#### 3. Last class, we used pipes (`%>%`) and `mutate()` to add a column to a data frame; pipes are part of the *dplyr* package. We can use pipes more generally, as in the code chunk below. Notice that this gives the same result as in your previous code chunk.
+
+```{r}
+us_contagious_diseases %>%
+  str
+```
+
+#### 4. The data set we have contains yearly incidence for seven different infectious diseases in the United States from 1966 to 2011. It would be nice to know what diseases are included. We can use pipes to do this, along with `pull` and `levels`.
+
+```{r}
+us_contagious_diseases %>%
+  pull(var=disease) %>%
+  levels
+```
+
+#### 5. Comparing raw case counts between two states, for example, is not necessarily the best way to compare disease incidence. What should I account for to create some measure that is more comparable? What would this look like mathematically? Is this a rate, ratio, or proportion? Consider reporting this quantity per 10,000 people.
+
+
+
+#### 6. Using pipes and the mutate function, let's create a new column in `us_contagious_diseases` that captures the quantity you described in Question 5. You should name it either rate, ratio, or proportion, depending on what quantity you identified.
+
+```{r}
+
+```
+
+
+
+#### There are 52 weeks in a year. Do we have reporting for 52 weeks in every year and every state for every disease? If the answer is "no", what might this mean for case counts in terms of comparison year-to-year?. If you find an example helpful for building intuition, consider case counts in a year where we have reporting for 49 weeks versus one where we have reporting for 52 weeks.
+
+
+#### How would you adjust for the weeks of reporting? Modify your code in Question 6 to make this adjustment to the measure of frequency that you created. 
+
+```{r}
+
+```
+
+```{r}
+us_contagious_diseases %>%
+  filter(disease == "Mumps" & state == "Massachusetts" | state == "Texas") %>%
+  mutate(rate = count / population * 10000 * 52 / weeks_reporting) %>%
+  ggplot(aes(x=year, y=rate)) + 
+  geom_col(aes(fill=state)) +
+  # geom_point() + 
+  geom_smooth()
+```
+
+#### The data frame `us_contagious_diseases` contains information for 50 US states plus the District of Columbia. Create a new data frame with only information for Mumps cases in Texas and Massachusetts. Call it `ma_tx_mumps`. You should use pipes and the filter function. Consider looking at the help documentation for filter if needed.
+
+```{r}
+
+```
+
+## Poisson (log-linear) model
+
+The general form of the Poisson model is 
+
+$$
+\log(\lambda)=\beta_0+\beta_1X_1+\beta_2X_2+\cdots+\beta_pX_p
+$$
+where $\beta_0$ is the intercept, $\beta_1$ through $\beta_p$ are the parameter coefficients that we need to estimate for the 1 through p explanatory variables. For today, we are only going to have only two explanatory variables ($p=2$) - time and state.
+
+$$
+\log(\lambda)=\beta_0+\beta_1X_1+\beta_2X_2
+$$
+When dealing with population/time adjusted rates, we need to add an offset term to the right side:
+
+$$
+\log(\lambda)=\log\left(\frac{\text{population}}{\text{weeks_reporting}/52}\right)+\beta_0+\beta_1X_1+\beta_2X_2
+$$
+
+Model assumptions are:
+
+1. **Poisson response.** The response variable is a count per unit time/space.
+2. **Independence.** The observations are independent of one another.
+3. **Mean=variance.** The mean of a Poisson random variable is equal to its variance.
+4. **Linearity.** The log of the mean rate, $\log(\lambda_i)$ must be a linear function of the explanatory variable(s).
+
+#### We can fit this model with the `glm()` function. This works much like the `lm` function, but we also have to specify a `family` argument, as well as adding an `offset()` term to the specification of the model formula. For help, look up the help documentation (`?glm`).
+
+```{r}
+
+```
+
+#### What is the estimated yearly growth rate for Mumps in Massachusetts?
+
+
+#### What is the estimated yearly growth rate for Mumps in Texas?
+
+
+
+#### As a class, we will discuss how to interpret the results and connect this to relative risk, which is defined as 
+
+$$
+RR=\frac{P(\text{diseased|exposed})}{P(\text{diseased|unexposed})}.
+$$
+
+
+## Extra Practice
+
+#### Decide on a disease (other than mumps) and states (other than Massachusetts and Connecticut), fit a Poisson regression model, and interpret the results in the context of relative risk. 
