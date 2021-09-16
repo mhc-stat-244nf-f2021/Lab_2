@@ -70,14 +70,16 @@ us_contagious_diseases %>%
 
 
 
-#### There are 52 weeks in a year. Do we have reporting for 52 weeks in every year and every state for every disease? If the answer is "no", what might this mean for case counts in terms of comparison year-to-year?. If you find an example helpful for building intuition, consider case counts in a year where we have reporting for 49 weeks versus one where we have reporting for 52 weeks.
+#### 7. There are 52 weeks in a year. Do we have reporting for 52 weeks in every year and every state for every disease? If the answer is "no", what might this mean for case counts in terms of comparison year-to-year?. If you find an example helpful for building intuition, consider case counts in a year where we have reporting for 49 weeks versus one where we have reporting for 52 weeks.
 
 
-#### How would you adjust for the weeks of reporting? Modify your code in Question 6 to make this adjustment to the measure of frequency that you created. 
+#### 8. How would you adjust for the weeks of reporting? Modify your code in Question 6 to make this adjustment to the measure of frequency that you created. 
 
 ```{r}
 
 ```
+
+#### 9. Here is some code that does some of things we have talked about, plus demonstrates the flexibility of piping. It might be helpful to use part of it in Question 10. Be careful, though - think carefully about what you might expect this code to include by way of states and diseases, and what it actually does.
 
 ```{r}
 us_contagious_diseases %>%
@@ -89,7 +91,7 @@ us_contagious_diseases %>%
   geom_smooth()
 ```
 
-#### The data frame `us_contagious_diseases` contains information for 50 US states plus the District of Columbia. Create a new data frame with only information for Mumps cases in Texas and Massachusetts. Call it `ma_tx_mumps`. You should use pipes and the filter function. Consider looking at the help documentation for filter if needed.
+#### 10. The data frame `us_contagious_diseases` contains information for 50 US states plus the District of Columbia. Create a new data frame with only information for Mumps cases in Texas and Massachusetts. Call it `ma_tx_mumps`. You should use pipes and the filter function. Consider looking at the help documentation for filter if needed.
 
 ```{r}
 
@@ -120,17 +122,30 @@ Model assumptions are:
 3. **Mean=variance.** The mean of a Poisson random variable is equal to its variance.
 4. **Linearity.** The log of the mean rate, $\log(\lambda_i)$ must be a linear function of the explanatory variable(s).
 
-#### We can fit this model with the `glm()` function. This works much like the `lm` function, but we also have to specify a `family` argument, as well as adding an `offset()` term to the specification of the model formula. For help, look up the help documentation (`?glm`).
+#### 11. We can fit this model with the `glm()` function. This works much like the `lm` function, but we also have to specify a `family` argument, as well as adding an `offset()` term to the specification of the model formula. For help, look up the help documentation (`?glm`).
 
 ```{r}
 
 ```
 
+#### 12. You should get an error when you try to fit this model as is. This is an error caused by something in the data. Think about the offset term - what variables are included? Inspect the range of each one to determine what the source of the error is.
+
+```{r}
+
+```
+
+
 #### What is the estimated yearly growth rate for Mumps in Massachusetts?
 
+```{r}
+
+```
 
 #### What is the estimated yearly growth rate for Mumps in Texas?
 
+```{r}
+
+```
 
 
 #### As a class, we will discuss how to interpret the results and connect this to relative risk, which is defined as 
